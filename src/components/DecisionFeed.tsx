@@ -116,7 +116,7 @@ export function DecisionFeed() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-foreground">Decision Feed</h2>
         <div className="text-sm text-foreground-muted">
-          Showing top disposal risks • <span className="text-foreground">5 of 47 dishes</span>
+          Showing top disposal risks
         </div>
       </div>
       

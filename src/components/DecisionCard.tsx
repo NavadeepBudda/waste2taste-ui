@@ -63,36 +63,15 @@ export function DecisionCard({
                 
                 <div className="flex items-center gap-3">
                   <h3 className="font-semibold text-foreground text-lg">{dishName}</h3>
-                  {isOutlier && (
-                    <div className="w-2 h-2 bg-destructive rounded-full" title="Significant variance detected" />
-                  )}
-                  <Badge variant="outline" className="text-xs">
-                    {station}
-                  </Badge>
                 </div>
               </div>
 
-              {/* Middle cluster: Mass, Trend, Confidence */}
-              <div className="flex items-center gap-6">
+              {/* Middle cluster: Mass */}
+              <div className="flex items-center">
                 <div className="text-right">
                   <p className="text-2xl font-bold text-foreground tabular-nums">{mass}</p>
                   <p className="text-xs text-foreground-muted">lbs disposed</p>
                 </div>
-                
-                {/* Mini trend spark - simplified */}
-                <div className="w-12 h-6 bg-muted rounded flex items-end gap-px p-1">
-                  <div className="w-1 bg-destructive/60 h-2 rounded-sm" />
-                  <div className="w-1 bg-destructive/80 h-3 rounded-sm" />
-                  <div className="w-1 bg-destructive h-4 rounded-sm" />
-                  <div className="w-1 bg-destructive/70 h-2 rounded-sm" />
-                </div>
-                
-                <div className={cn(
-                  "w-3 h-3 rounded-full",
-                  confidence >= 90 ? "bg-success" :
-                  confidence >= 70 ? "bg-warning" :
-                  "bg-destructive"
-                )} title={`${confidence}% confidence`} />
               </div>
 
               {/* Right cluster: Actions */}
@@ -120,25 +99,12 @@ export function DecisionCard({
 
         <CollapsibleContent className="border-t border-card-border">
           <div className="p-4 space-y-4">
-            {/* Why now */}
-            <div>
-              <p className="text-sm text-foreground-muted leading-relaxed">
-                High disposal rate suggests flavor profile mismatch. Similar dishes with shared ingredients show 40% better acceptance.
-              </p>
-            </div>
 
-            {/* Ingredient overlap visualization */}
-            <div>
-              <p className="text-xs text-foreground-subtle uppercase tracking-wide font-medium mb-2">
-                Ingredient Overlap
-              </p>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div className="h-full w-3/4 bg-success rounded-full" />
-              </div>
-            </div>
 
-            {/* Top swap options */}
-            <div className="space-y-3">
+            {/* Alternate Food Options */}
+            <div>
+              <h4 className="font-medium text-foreground mb-3">Alternate Food Options</h4>
+              <div className="space-y-3">
               {swapOptions.slice(0, 2).map((swap, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg border border-border">
                   <div>
@@ -159,21 +125,9 @@ export function DecisionCard({
                   </div>
                 </div>
               ))}
+              </div>
             </div>
 
-            {/* Chips: Allergens & Equipment */}
-            <div className="flex flex-wrap gap-2">
-              {allergens.map((allergen) => (
-                <Badge key={allergen} variant="secondary" className="text-xs">
-                  {allergen}
-                </Badge>
-              ))}
-              {equipment.map((item) => (
-                <Badge key={item} variant="outline" className="text-xs">
-                  {item}
-                </Badge>
-              ))}
-            </div>
           </div>
         </CollapsibleContent>
       </Collapsible>

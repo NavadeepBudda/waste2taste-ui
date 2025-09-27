@@ -28,12 +28,9 @@ export function KpiTiles() {
             <p className="text-sm text-foreground-muted font-medium tracking-wide uppercase">
               Swap Opportunities
             </p>
-            <div className="flex items-baseline gap-2 mt-1">
-              <p className="text-3xl font-bold text-foreground tabular-nums">
-                12
-              </p>
-              <span className="text-sm text-success font-medium">+3</span>
-            </div>
+            <p className="text-3xl font-bold text-foreground mt-1 tabular-nums">
+              12
+            </p>
           </div>
           <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center group-hover:bg-accent/20 transition-smooth">
             <TrendingUp className="h-5 w-5 text-accent" />

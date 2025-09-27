@@ -42,12 +42,6 @@ export function HeroStrip() {
             North Dining Hall
             <ChevronDown className="ml-2 h-3 w-3" />
           </Button>
-          
-          <div className="h-4 w-px bg-border" />
-          
-          <Badge variant="secondary" className="h-6 px-2 text-xs font-medium">
-            Lunch Service
-          </Badge>
         </div>
       </div>
     </div>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>Waste2Taste API Test</h1>
+    <button onclick="testAnalytics()">Test Analytics</button>
+    <button onclick="testAnalyzeData()">Test Analyze Data</button>
+    <pre id="output"></pre>
+
+    <script>
+        async function testAnalytics() {
+            try {
+                const response = await fetch('http://localhost:5001/analytics');
+                const data = await response.json();
+                document.getElementById('output').textContent = 'Analytics:\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('output').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function testAnalyzeData() {
+            try {
+                const response = await fetch('http://localhost:5001/analyze-food-data-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        hours_back: 24,
+                        top_n_recommendations: 10
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('output').textContent = 'Analyze Data:\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('output').textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

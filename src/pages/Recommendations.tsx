@@ -12,30 +12,14 @@ const Recommendations = () => {
       {/* Main Layout */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* KPI Tiles - Different metrics for recommendations */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
           <div className="bg-gradient-card border border-card-border rounded-lg p-6 shadow-card">
             <div className="flex items-baseline justify-between">
               <div>
                 <p className="text-sm font-medium text-foreground-muted mb-1">Swap Opportunities</p>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-3xl font-bold text-foreground tabular-nums">12</span>
-                  <span className="text-sm text-success font-medium">+3 from yesterday</span>
-                </div>
+                <span className="text-3xl font-bold text-foreground tabular-nums">12</span>
               </div>
               <div className="w-2 h-2 bg-accent rounded-full opacity-60" />
-            </div>
-          </div>
-
-          <div className="bg-gradient-card border border-card-border rounded-lg p-6 shadow-card">
-            <div className="flex items-baseline justify-between">
-              <div>
-                <p className="text-sm font-medium text-foreground-muted mb-1">Ingredient Efficiency</p>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-3xl font-bold text-foreground tabular-nums">78%</span>
-                  <span className="text-sm text-success font-medium">+5% improvement</span>
-                </div>
-              </div>
-              <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
             </div>
           </div>
         </div>

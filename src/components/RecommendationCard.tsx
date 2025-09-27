@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronUp, Clock, Users, AlertCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface RecommendationCardProps {
@@ -56,20 +56,10 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
               <h3 className="font-semibold text-foreground text-lg leading-tight mb-1">{dish.name}</h3>
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant="secondary" className="text-xs">{dish.station}</Badge>
-                <Badge variant="outline" className="text-xs">
-                  {dish.overlapPercentage}% overlap
-                </Badge>
-                {dish.hasConflict && (
-                  <AlertCircle className="w-4 h-4 text-warning" />
-                )}
               </div>
             </div>
           </div>
 
-          {/* Middle cluster */}
-          <div className="hidden md:flex flex-col items-center gap-1 px-4">
-            <p className="text-sm text-foreground-muted text-center max-w-xs">{dish.reason}</p>
-          </div>
 
           {/* Right cluster */}
           <div className="flex items-center gap-3 flex-shrink-0">
@@ -93,25 +83,12 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
           </div>
         </div>
 
-        {/* Mobile reason */}
-        <div className="md:hidden mt-3">
-          <p className="text-sm text-foreground-muted">{dish.reason}</p>
-        </div>
       </div>
 
       {/* Expanded Content */}
       {isExpanded && (
         <div className="border-t border-card-border bg-surface/30">
           <div className="p-6 space-y-6">
-            {/* Current Dish Info */}
-            <div>
-              <h4 className="font-medium text-foreground mb-3">Current Dish Details</h4>
-              <div className="flex flex-wrap gap-2">
-                {dish.dietary.map((diet) => (
-                  <Badge key={diet} variant="outline" className="text-xs">{diet}</Badge>
-                ))}
-              </div>
-            </div>
 
             {/* Swap Options */}
             <div className="grid gap-6 md:grid-cols-2">
@@ -190,28 +167,6 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
               </div>
             </div>
 
-            {/* Batch Controls */}
-            <div className="flex items-center justify-between pt-4 border-t border-card-border">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-foreground-muted" />
-                  <span className="text-sm text-foreground-muted">Batch size:</span>
-                  <select className="text-sm border border-input rounded px-2 py-1 bg-background">
-                    <option>Full</option>
-                    <option>Half</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" className="text-foreground-muted">
-                  Save for later
-                </Button>
-                <Button variant="ghost" size="sm" className="text-foreground-muted">
-                  Compare
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
       )}
