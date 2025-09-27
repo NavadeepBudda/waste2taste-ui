@@ -56,17 +56,17 @@ export function RecommendationFeed() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Better Options for Lunch</h2>
-          <p className="text-foreground-muted">
+          <h2 className="text-4xl font-bold text-foreground tracking-tight mb-3">Better Options</h2>
+          <p className="text-lg text-foreground-muted">
             Recommended swaps to reduce waste and improve satisfaction
           </p>
         </div>
       </div>
 
       {/* Recommendation Cards */}
-      <div className="space-y-4">
+      <div className="space-y-8">
         {recommendations.map((recommendation, index) => (
           <RecommendationCard
             key={recommendation.id}

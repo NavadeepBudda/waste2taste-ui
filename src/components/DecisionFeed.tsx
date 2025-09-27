@@ -1,6 +1,7 @@
 import { DecisionCard } from "./DecisionCard";
 import { useData } from "@/contexts/DataContext";
 import { Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export function DecisionFeed() {
   const { todayData: dashboardData, isTodayLoading, todayError } = useData();
@@ -65,19 +66,31 @@ export function DecisionFeed() {
   });
 
   const decisions = Array.from(uniqueFoods.values()).sort((a, b) => a.rank - b.rank);
+  const maxMass = decisions.reduce((highest, decision) => Math.max(highest, decision.mass), 0) || 1;
+  const hoursBack = dashboardData?.analysis_summary?.hours_back ?? 24;
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-foreground">Decision Feed</h2>
-        <div className="text-sm text-foreground-muted">
-          Showing top disposal risks
+      <div className="mb-10 flex flex-wrap items-center justify-between gap-3">
+        <div className="space-y-2">
+          <h2 className="text-4xl font-bold text-foreground tracking-tight">Decision Feed</h2>
+          <p className="text-lg text-foreground-muted">
+            Impact-ranked dishes driving avoidable waste. Prioritise actions for the next service window.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="secondary" className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-[0.28em]">
+            Top {decisions.length} of {dashboardData?.analysis_summary?.total_foods_analyzed ?? decisions.length}
+          </Badge>
+          <Badge variant="secondary" className="rounded-full border border-border/60 px-3 py-1 text-xs uppercase tracking-[0.28em]">
+            Last {hoursBack}h window
+          </Badge>
         </div>
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-8">
         {decisions.map((decision, index) => (
-          <DecisionCard key={index} {...decision} />
+          <DecisionCard key={index} {...decision} maxMass={maxMass} />
         ))}
       </div>
 

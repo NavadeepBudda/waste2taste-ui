@@ -36,9 +36,9 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
 
   return (
     <div className={cn(
-      "bg-gradient-card border border-card-border rounded-lg shadow-card overflow-hidden",
+      "bg-gradient-card border border-card-border rounded-2xl shadow-lg overflow-hidden",
       "transition-all duration-300 ease-smooth",
-      isExpanded && "shadow-elevated"
+      isExpanded && "shadow-xl -translate-y-1"
     )}>
       {/* Collapsed Header */}
       <div 
@@ -49,18 +49,18 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
           {/* Left cluster: Rank */}
           <div className="col-span-1 flex items-center justify-center">
             <div className={cn(
-              "w-10 h-10 rounded-full flex items-center justify-center text-base font-bold",
-              rank <= 3 ? "bg-destructive text-destructive-foreground" :
-              rank <= 6 ? "bg-warning text-warning-foreground" :
-              "bg-muted text-foreground-muted"
+              "w-10 h-10 rounded-full flex items-center justify-center text-base font-bold border",
+              rank <= 3 ? "bg-red-100 text-red-700 border-red-200" :
+              rank <= 6 ? "bg-orange-100 text-orange-700 border-orange-200" :
+              "bg-muted text-foreground border-border"
             )}>
               {rank}
             </div>
           </div>
 
           {/* Middle cluster: Name, Station */}
-          <div className="col-span-8 min-w-0">
-            <h3 className="font-semibold text-foreground text-lg leading-tight mb-1">{dish.name}</h3>
+          <div className="col-span-8">
+            <h3 className="font-semibold text-foreground text-lg leading-tight mb-1 break-words">{dish.name}</h3>
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="secondary" className="text-xs">{dish.station}</Badge>
             </div>

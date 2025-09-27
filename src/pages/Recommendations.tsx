@@ -1,12 +1,15 @@
 import { HeroStrip } from "@/components/HeroStrip";
-import { KpiTiles } from "@/components/KpiTiles";
 import { RecommendationFeed } from "@/components/RecommendationFeed";
-import { RecommendationActionDock } from "@/components/RecommendationActionDock";
 import { useData } from "@/contexts/DataContext";
 import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 const Recommendations = () => {
-  const { recommendationsData, isRecommendationsLoading, recommendationsError } = useData();
+  const { recommendationsData, isRecommendationsLoading, recommendationsError, refetchRecommendationsData } = useData();
+  
+  useEffect(() => {
+    refetchRecommendationsData();
+  }, [refetchRecommendationsData]);
 
   // Calculate swap opportunities based on returned data
   const swapOpportunities = (recommendationsData?.most_disliked_foods?.length || 0) * 2; // 2 recommendations per item
@@ -53,35 +56,24 @@ const Recommendations = () => {
       
       {/* Main Layout */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* KPI Tiles - Different metrics for recommendations */}
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
+        {/* Ready to Accept Section */}
+        <div className="mb-8">
           <div className="bg-gradient-card border border-card-border rounded-lg p-6 shadow-card">
             <div className="flex items-baseline justify-between">
               <div>
-                <p className="text-sm font-medium text-foreground-muted mb-1">Swap Opportunities</p>
+                <p className="text-sm font-medium text-foreground-muted mb-1">Ready to Accept</p>
                 <span className="text-3xl font-bold text-foreground tabular-nums">
                   {swapOpportunities}
                 </span>
+                <p className="text-sm text-foreground-muted mt-2">Recommendations ready for implementation</p>
               </div>
               <div className="w-2 h-2 bg-accent rounded-full opacity-60" />
             </div>
           </div>
         </div>
         
-        {/* Two-column layout: Recommendation Feed + Action Dock */}
-        <div className="grid grid-cols-12 gap-8">
-          {/* Left 8 columns: Recommendation Feed */}
-          <div className="col-span-12 lg:col-span-8">
-            <RecommendationFeed />
-          </div>
-          
-          {/* Right 4 columns: Action Dock */}
-          <div className="col-span-12 lg:col-span-4">
-            <div className="lg:sticky lg:top-8">
-              <RecommendationActionDock />
-            </div>
-          </div>
-        </div>
+        {/* Full-width Recommendation Feed */}
+        <RecommendationFeed />
       </div>
     </div>
   );

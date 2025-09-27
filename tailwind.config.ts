@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import { fontFamily } from "tailwindcss/defaultTheme";
+import animatePlugin from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -13,6 +15,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", ...fontFamily.sans],
+        mono: ["var(--font-mono)", ...fontFamily.mono],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -21,6 +27,7 @@ export default {
         foreground: "hsl(var(--foreground))",
         surface: "hsl(var(--surface))",
         "surface-elevated": "hsl(var(--surface-elevated))",
+        "surface-glass": "hsl(var(--surface-glass))",
         "foreground-muted": "hsl(var(--foreground-muted))",
         "foreground-subtle": "hsl(var(--foreground-subtle))",
         primary: {
@@ -77,15 +84,21 @@ export default {
         'gradient-hero': 'var(--gradient-hero)',
         'gradient-card': 'var(--gradient-card)', 
         'gradient-accent': 'var(--gradient-accent)',
+        'gradient-warning': 'var(--gradient-warning)',
         'pattern-dots': 'var(--pattern-dots)',
+        'pattern-grid': 'var(--pattern-grid)',
       },
       boxShadow: {
         'card': 'var(--shadow-card)',
         'elevated': 'var(--shadow-elevated)',
+        'frosted': '0 20px 60px -36px hsl(220 60% 20% / 0.35)',
       },
       transitionTimingFunction: {
         'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
         'bounce': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      },
+      transitionDuration: {
+        350: '350ms',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -93,6 +106,14 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        float: {
+          "0%, 100%": { transform: "translate3d(0, 0, 0) scale(1)" },
+          "50%": { transform: "translate3d(0, -6px, 0) scale(1.01)" },
+        },
+        "pulse-soft": {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "0.55" },
+        },
         "accordion-down": {
           from: {
             height: "0",
@@ -113,8 +134,10 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float": "float 18s ease-in-out infinite",
+        "pulse-soft": "pulse-soft 8s ease-in-out infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animatePlugin],
 } satisfies Config;

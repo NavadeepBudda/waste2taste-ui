@@ -3,17 +3,16 @@ import { cn } from "@/lib/utils";
 
 export function Navigation() {
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="flex items-center gap-1 rounded-full border border-white/50 bg-[hsla(var(--surface-glass))] px-1 py-1 backdrop-blur-md shadow-card dark:border-white/10">
       <NavLink
         to="/"
         end
         className={({ isActive }) =>
           cn(
-            "px-4 py-2 text-sm font-medium rounded-md transition-all duration-200",
-            "hover:bg-surface-elevated hover:text-foreground",
-            isActive
-              ? "bg-surface-elevated text-foreground shadow-sm"
-              : "text-foreground-muted"
+            "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-350 ease-smooth",
+            "text-foreground-muted hover:text-foreground",
+            "hover:bg-[hsla(var(--surface-glass))]",
+            isActive && "text-foreground bg-[hsla(var(--surface-glass))] shadow-sm"
           )
         }
       >
@@ -23,11 +22,10 @@ export function Navigation() {
         to="/recommendations"
         className={({ isActive }) =>
           cn(
-            "px-4 py-2 text-sm font-medium rounded-md transition-all duration-200",
-            "hover:bg-surface-elevated hover:text-foreground",
-            isActive
-              ? "bg-surface-elevated text-foreground shadow-sm"
-              : "text-foreground-muted"
+            "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-350 ease-smooth",
+            "text-foreground-muted hover:text-foreground",
+            "hover:bg-[hsla(var(--surface-glass))]",
+            isActive && "text-foreground bg-[hsla(var(--surface-glass))] shadow-sm"
           )
         }
       >
