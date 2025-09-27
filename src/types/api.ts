@@ -17,6 +17,8 @@ export interface MostDislikedFood {
   food_name: string;
   disposal_mass: number;
   rank: number;
+  dish_summary: string;
+  keywords: string[];
   alternative_recipes: AlternativeRecipe[];
 }
 
@@ -42,8 +44,7 @@ export interface AnalysisSummary {
   total_foods_analyzed: number;
   most_disliked_count: number;
   recommendations_generated: number;
-  data_stored: boolean;
-  recommendations_stored: boolean;
+  hours_back: number;
 }
 
 export interface AnalyzeFoodDataResponse {

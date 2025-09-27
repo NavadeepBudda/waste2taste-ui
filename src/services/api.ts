@@ -97,9 +97,19 @@ class Waste2TasteAPI {
         { food_name: "Dry Chicken Breast", disposal_mass: 8.7 },
         { food_name: "Overcooked Broccoli", disposal_mass: 12.3 },
         { food_name: "Bland Mac and Cheese", disposal_mass: 18.5 },
-        { food_name: "Tough Steak", disposal_mass: 22.1 }
+        { food_name: "Tough Steak", disposal_mass: 22.1 },
+        { food_name: "Mushy Rice", disposal_mass: 10.5 },
+        { food_name: "Burnt Toast", disposal_mass: 6.8 },
+        { food_name: "Salty Soup", disposal_mass: 14.2 },
+        { food_name: "Rubbery Fish", disposal_mass: 9.3 },
+        { food_name: "Soggy Salad", disposal_mass: 7.9 },
+        { food_name: "Lumpy Mashed Potatoes", disposal_mass: 11.1 },
+        { food_name: "Watery Pasta", disposal_mass: 13.6 },
+        { food_name: "Greasy Fries", disposal_mass: 16.4 },
+        { food_name: "Underseasoned Vegetables", disposal_mass: 8.2 },
+        { food_name: "Stale Bread", disposal_mass: 5.5 }
       ],
-      top_n_recommendations: 10
+      top_n_recommendations: 15
     };
     
     return this.request<AnalyzeFoodDataResponse>('/analyze-food-data', {

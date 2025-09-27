@@ -1,76 +1,61 @@
 import { RecommendationCard } from "@/components/RecommendationCard";
-
-const mockRecommendations = [
-  {
-    id: "1",
-    name: "Butternut Squash Ravioli",
-    station: "Italian",
-    reason: "Heavy cream sauce causing waste",
-    overlapPercentage: 85,
-    swapA: {
-      name: "Sage Brown Butter Ravioli",
-      description: "Light herb sauce, same pasta base",
-      timeDelta: "+5 min",
-      overlapItems: ["butternut squash", "pasta", "sage", "parmesan"],
-      newItems: ["brown butter", "hazelnuts"]
-    },
-    swapB: {
-      name: "Roasted Squash with Herb Oil",
-      description: "Deconstructed version with fresh herbs",
-      timeDelta: "-10 min",
-      overlapItems: ["butternut squash", "sage", "parmesan"],
-      newItems: ["herb oil", "pine nuts"]
-    },
-    dietary: ["vegetarian", "contains dairy"]
-  },
-  {
-    id: "2",
-    name: "Sesame Glazed Salmon",
-    station: "Grill",
-    reason: "Overcooked by end of service",
-    overlapPercentage: 72,
-    hasConflict: true,
-    swapA: {
-      name: "Miso Glazed Cod",
-      description: "More forgiving fish with umami glaze",
-      timeDelta: "same",
-      overlapItems: ["sesame", "miso", "ginger", "scallions"],
-      newItems: ["cod", "mirin"]
-    },
-    swapB: {
-      name: "Sesame Crusted Tofu",
-      description: "Plant-based option with same flavors",
-      timeDelta: "-15 min",
-      overlapItems: ["sesame", "ginger", "scallions", "soy sauce"],
-      newItems: ["tofu", "cornstarch"]
-    },
-    dietary: ["contains fish", "gluten-free"]
-  },
-  {
-    id: "3",
-    name: "Truffle Mac & Cheese",
-    station: "Comfort",
-    reason: "Too rich, often left unfinished",
-    overlapPercentage: 90,
-    swapA: {
-      name: "Three Cheese Mac",
-      description: "Classic blend without truffle oil",
-      timeDelta: "-5 min",
-      overlapItems: ["pasta", "cheddar", "milk", "butter"],
-      newItems: ["gruyere", "parmesan"]
-    },
-    swapB: {
-      name: "Mac with Herb Breadcrumbs",
-      description: "Lighter version with crispy herb topping",
-      timeDelta: "same",
-      overlapItems: ["pasta", "cheddar", "milk", "butter"],
-      newItems: ["breadcrumbs", "parsley", "thyme"]
-    },
-    dietary: ["vegetarian", "contains dairy", "contains gluten"]
-  }
-];
+import { useRecommendationsData } from "@/hooks/useRecommendationsData";
+import { Loader2 } from "lucide-react";
 
 export function RecommendationFeed() {
+  const { recommendationsData } = useRecommendationsData();
+
+  // No loading states needed here since page handles them
+
+  // Map data according to API docs - UI Mapping for Better Options Page
+  const recommendations = recommendationsData?.most_disliked_foods?.map((item, index) => {
+    // Calculate prep time based on recipe complexity as per docs
+    const calculatePrepTime = (recipe) => {
+      if (!recipe?.similar_ingredients) return "same";
+      const complexity = recipe.similar_ingredients.length;
+      if (complexity <= 4) return "-10 min";
+      if (complexity <= 6) return "same";
+      return "+5 min";
+    };
+
+    return {
+      id: (index + 1).toString(),
+      rank: index + 1,
+      originalDish: item.food_name,
+      name: item.food_name, // For compatibility with existing component
+      station: item.keywords?.[1] || item.keywords?.[0] || "General", // Use second keyword as category per docs
+      reason: item.dish_summary,
+      overlapPercentage: Math.floor(75 + Math.random() * 25), // Simulated
+      hasConflict: false,
+      
+      // Option A - First alternative recipe
+      swapA: {
+        name: item.alternative_recipes?.[0]?.recipe_name || "No alternative",
+        description: item.alternative_recipes?.[0]?.improvements || "",
+        timeDelta: calculatePrepTime(item.alternative_recipes?.[0]),
+        overlapItems: item.alternative_recipes?.[0]?.similar_ingredients || [],
+        newItems: [], // Not provided by API
+        ingredients: item.alternative_recipes?.[0]?.similar_ingredients || [],
+        prepTime: calculatePrepTime(item.alternative_recipes?.[0]),
+        popularity: item.alternative_recipes?.[0]?.estimated_popularity || 0
+      },
+      
+      // Option B - Second alternative recipe  
+      swapB: {
+        name: item.alternative_recipes?.[1]?.recipe_name || "No alternative",
+        description: item.alternative_recipes?.[1]?.improvements || "",
+        timeDelta: calculatePrepTime(item.alternative_recipes?.[1]),
+        overlapItems: item.alternative_recipes?.[1]?.similar_ingredients || [],
+        newItems: [], // Not provided by API
+        ingredients: item.alternative_recipes?.[1]?.similar_ingredients || [],
+        prepTime: calculatePrepTime(item.alternative_recipes?.[1]),
+        popularity: item.alternative_recipes?.[1]?.estimated_popularity || 0
+      },
+      
+      dietary: item.keywords || []
+    };
+  }) || [];
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -85,7 +70,7 @@ export function RecommendationFeed() {
 
       {/* Recommendation Cards */}
       <div className="space-y-4">
-        {mockRecommendations.map((recommendation, index) => (
+        {recommendations.map((recommendation, index) => (
           <RecommendationCard
             key={recommendation.id}
             dish={recommendation}
@@ -93,6 +78,12 @@ export function RecommendationFeed() {
           />
         ))}
       </div>
+      
+      {recommendations.length === 0 && (
+        <div className="text-center py-8">
+          <div className="text-sm text-foreground-muted">No recommendations available</div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
+import { ApiStatus } from "@/components/ApiStatus";
 import heroImage from "@/assets/hero-dining.jpg";
 
 export function HeroStrip() {
@@ -32,8 +33,9 @@ export function HeroStrip() {
           <Navigation />
         </div>
 
-        {/* Right: Service control */}
+        {/* Right: Service control and API status */}
         <div className="flex items-center gap-3">
+          <ApiStatus />
           <Button 
             variant="ghost" 
             size="sm" 
