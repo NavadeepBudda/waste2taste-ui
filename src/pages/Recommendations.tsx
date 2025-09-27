@@ -2,17 +2,17 @@ import { HeroStrip } from "@/components/HeroStrip";
 import { KpiTiles } from "@/components/KpiTiles";
 import { RecommendationFeed } from "@/components/RecommendationFeed";
 import { RecommendationActionDock } from "@/components/RecommendationActionDock";
-import { useRecommendationsData } from "@/hooks/useRecommendationsData";
+import { useData } from "@/contexts/DataContext";
 import { Loader2 } from "lucide-react";
 
 const Recommendations = () => {
-  const { recommendationsData, isLoading, error } = useRecommendationsData();
+  const { recommendationsData, isRecommendationsLoading, recommendationsError } = useData();
 
   // Calculate swap opportunities based on returned data
   const swapOpportunities = (recommendationsData?.most_disliked_foods?.length || 0) * 2; // 2 recommendations per item
 
   // Show loading state until data is ready
-  if (isLoading) {
+  if (isRecommendationsLoading) {
     return (
       <div className="min-h-screen bg-background">
         <HeroStrip />
@@ -30,7 +30,7 @@ const Recommendations = () => {
   }
 
   // Show error state
-  if (error) {
+  if (recommendationsError) {
     return (
       <div className="min-h-screen bg-background">
         <HeroStrip />
@@ -38,7 +38,7 @@ const Recommendations = () => {
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
               <h3 className="text-lg font-semibold text-foreground mb-2">Unable to Load Recommendations</h3>
-              <p className="text-foreground-muted">{error}</p>
+              <p className="text-foreground-muted">{recommendationsError}</p>
             </div>
           </div>
         </div>

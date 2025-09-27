@@ -11,6 +11,7 @@ export interface AlternativeRecipe {
   similar_ingredients: string[];
   improvements: string;
   estimated_popularity: number;
+  prep_time: string;
 }
 
 export interface MostDislikedFood {
@@ -18,7 +19,7 @@ export interface MostDislikedFood {
   disposal_mass: number;
   rank: number;
   dish_summary: string;
-  keywords: string[];
+  keywords: string;
   alternative_recipes: AlternativeRecipe[];
 }
 

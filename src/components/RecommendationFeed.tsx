@@ -1,11 +1,8 @@
 import { RecommendationCard } from "@/components/RecommendationCard";
-import { useRecommendationsData } from "@/hooks/useRecommendationsData";
-import { Loader2 } from "lucide-react";
+import { useData } from "@/contexts/DataContext";
 
 export function RecommendationFeed() {
-  const { recommendationsData } = useRecommendationsData();
-
-  // No loading states needed here since page handles them
+  const { recommendationsData } = useData();
 
   // Map data according to API docs - UI Mapping for Better Options Page
   const recommendations = recommendationsData?.most_disliked_foods?.map((item, index) => {

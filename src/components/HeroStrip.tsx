@@ -1,6 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { ApiStatus } from "@/components/ApiStatus";
 import heroImage from "@/assets/hero-dining.jpg";
@@ -22,12 +19,8 @@ export function HeroStrip() {
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-4">
             <h1 className="text-lg font-semibold text-foreground tracking-tight">
-              What needs love at Lunch
+              Waste2Taste
             </h1>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-              <span className="text-sm text-foreground-muted">Live</span>
-            </div>
           </div>
           
           <Navigation />
@@ -36,14 +29,6 @@ export function HeroStrip() {
         {/* Right: Service control and API status */}
         <div className="flex items-center gap-3">
           <ApiStatus />
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 px-3 text-sm font-medium text-foreground-muted hover:text-foreground hover:bg-surface-elevated transition-smooth"
-          >
-            North Dining Hall
-            <ChevronDown className="ml-2 h-3 w-3" />
-          </Button>
         </div>
       </div>
     </div>

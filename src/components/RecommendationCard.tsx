@@ -45,24 +45,29 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
         className="p-6 cursor-pointer hover:bg-surface-elevated/50 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center justify-between">
-          {/* Left cluster */}
-          <div className="flex items-center gap-4 min-w-0">
-            <div className="flex-shrink-0 w-8 h-8 bg-foreground-muted/10 rounded-full flex items-center justify-center">
-              <span className="text-sm font-bold text-foreground-muted tabular-nums">{rank}</span>
-            </div>
-            
-            <div className="min-w-0">
-              <h3 className="font-semibold text-foreground text-lg leading-tight mb-1">{dish.name}</h3>
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant="secondary" className="text-xs">{dish.station}</Badge>
-              </div>
+        <div className="grid grid-cols-12 items-center gap-4">
+          {/* Left cluster: Rank */}
+          <div className="col-span-1 flex items-center justify-center">
+            <div className={cn(
+              "w-10 h-10 rounded-full flex items-center justify-center text-base font-bold",
+              rank <= 3 ? "bg-destructive text-destructive-foreground" :
+              rank <= 6 ? "bg-warning text-warning-foreground" :
+              "bg-muted text-foreground-muted"
+            )}>
+              {rank}
             </div>
           </div>
 
+          {/* Middle cluster: Name, Station */}
+          <div className="col-span-8 min-w-0">
+            <h3 className="font-semibold text-foreground text-lg leading-tight mb-1">{dish.name}</h3>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="secondary" className="text-xs">{dish.station}</Badge>
+            </div>
+          </div>
 
-          {/* Right cluster */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          {/* Right cluster: Actions */}
+          <div className="col-span-3 flex items-center justify-end gap-3 flex-shrink-0">
             <Button 
               variant="outline" 
               size="sm"

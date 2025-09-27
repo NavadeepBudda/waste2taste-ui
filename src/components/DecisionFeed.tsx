@@ -1,11 +1,11 @@
 import { DecisionCard } from "./DecisionCard";
-import { useTodayData } from "@/hooks/useTodayData";
+import { useData } from "@/contexts/DataContext";
 import { Loader2 } from "lucide-react";
 
 export function DecisionFeed() {
-  const { todayData: dashboardData, isLoading, error } = useTodayData(); // Use today's 24-hour data
+  const { todayData: dashboardData, isTodayLoading, todayError } = useData();
 
-  if (error) {
+  if (todayError) {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-6">
@@ -16,14 +16,14 @@ export function DecisionFeed() {
             Unable to load decision feed data
           </div>
           <div className="text-xs text-foreground-muted mt-2">
-            {error}
+            {todayError}
           </div>
         </div>
       </div>
     );
   }
 
-  if (isLoading) {
+  if (isTodayLoading) {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-6">
@@ -47,14 +47,16 @@ export function DecisionFeed() {
       uniqueFoods.set(food.food_name, {
         rank: food.rank,
         dishName: food.food_name,
-        station: food.keywords?.[0] || "Kitchen", // Use first keyword as station
+        description: food.description, // Pass the description
+        station: food.dish_summary || "Kitchen", // Use dish_summary as station
         mass: food.disposal_mass,
         confidence: Math.floor(80 + Math.random() * 20), // Simulated confidence score
         isOutlier: food.rank <= 3, // Top 3 are outliers
         swapOptions: food.alternative_recipes?.map((recipe) => ({
           name: recipe.recipe_name,
           description: recipe.improvements, // This is the one-sentence description
-          sharedIngredients: recipe.similar_ingredients?.length || 0
+          sharedIngredients: recipe.similar_ingredients?.length || 0,
+          prep_time: recipe.prep_time
         })) || [],
         allergens: [], // Not provided by API
         equipment: [] // Not provided by API
@@ -77,6 +79,13 @@ export function DecisionFeed() {
         {decisions.map((decision, index) => (
           <DecisionCard key={index} {...decision} />
         ))}
+      </div>
+
+      {/* Ranking Explanation */}
+      <div className="text-center py-4">
+        <p className="text-sm text-foreground-muted">
+          The number on the left of each item indicates its rank as the most disliked food, with '1' being the most disliked.
+        </p>
       </div>
       
       {/* Load more indicator */}
