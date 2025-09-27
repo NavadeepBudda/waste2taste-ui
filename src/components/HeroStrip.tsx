@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
 import heroImage from "@/assets/hero-dining.jpg";
 
 export function HeroStrip() {
@@ -16,15 +17,19 @@ export function HeroStrip() {
       <div className="absolute inset-0 bg-pattern-dots opacity-50" style={{ backgroundSize: '20px 20px' }} />
       
       <div className="relative h-full max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Left: Brand moment */}
-        <div className="flex items-center gap-4">
-          <h1 className="text-lg font-semibold text-foreground tracking-tight">
-            What needs love at Lunch
-          </h1>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-            <span className="text-sm text-foreground-muted">Live</span>
+        {/* Left: Brand moment + Navigation */}
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4">
+            <h1 className="text-lg font-semibold text-foreground tracking-tight">
+              What needs love at Lunch
+            </h1>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
+              <span className="text-sm text-foreground-muted">Live</span>
+            </div>
           </div>
+          
+          <Navigation />
         </div>
 
         {/* Right: Service control */}
