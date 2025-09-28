@@ -1,6 +1,6 @@
 import { createContext, useContext, ReactNode, useState, useEffect, useCallback } from 'react';
 import { api } from '@/services/api';
-import { AnalyzeFoodDataResponse } from '@/types/api';
+import { AnalyzeFoodDataResponse, HistoricalAnalytics, SmartInsight, SmartRecommendation } from '@/types/api';
 
 interface DataContextType {
   todayData: AnalyzeFoodDataResponse | null;
@@ -11,8 +11,16 @@ interface DataContextType {
   isRecommendationsLoading: boolean;
   recommendationsError: string | null;
   recommendationsLastUpdated: Date | null;
+  historicalData: HistoricalAnalytics | null;
+  isHistoricalLoading: boolean;
+  historicalError: string | null;
+  historicalLastUpdated: Date | null;
+  insights: SmartInsight[];
+  recommendations: SmartRecommendation[];
   refetchTodayData: () => Promise<void>;
   refetchRecommendationsData: () => Promise<void>;
+  refetchHistoricalData: () => Promise<void>;
+  refetchInsights: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -30,6 +38,14 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [isRecommendationsLoading, setIsRecommendationsLoading] = useState(false);
   const [recommendationsError, setRecommendationsError] = useState<string | null>(null);
   const [recommendationsLastUpdated, setRecommendationsLastUpdated] = useState<Date | null>(null);
+
+  const [historicalData, setHistoricalData] = useState<HistoricalAnalytics | null>(null);
+  const [isHistoricalLoading, setIsHistoricalLoading] = useState(false);
+  const [historicalError, setHistoricalError] = useState<string | null>(null);
+  const [historicalLastUpdated, setHistoricalLastUpdated] = useState<Date | null>(null);
+
+  const [insights, setInsights] = useState<SmartInsight[]>([]);
+  const [recommendations, setRecommendations] = useState<SmartRecommendation[]>([]);
 
   const shouldRefetchData = (lastUpdated: Date | null) => {
     if (!lastUpdated) return true;
@@ -98,10 +114,60 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [recommendationsLastUpdated, recommendationsData]);
 
+  const refetchHistoricalData = useCallback(async () => {
+    if (!shouldRefetchData(historicalLastUpdated) && historicalData) {
+      return;
+    }
+
+    setIsHistoricalLoading(true);
+    setHistoricalError(null);
+    
+    try {
+      console.log('Fetching historical analytics data...');
+      const response = await api.getHistoricalAnalytics(30);
+      
+      if (response.historical_analytics) {
+        console.log('Loaded historical analytics data');
+        setHistoricalData(response.historical_analytics);
+        setHistoricalLastUpdated(new Date());
+      } else {
+        setHistoricalData(null);
+        setHistoricalError('No historical data available');
+        setHistoricalLastUpdated(new Date());
+      }
+    } catch (error) {
+      console.error('Error fetching historical data:', error);
+      setHistoricalData(null);
+      setHistoricalError(error instanceof Error ? error.message : 'Failed to fetch historical data');
+      setHistoricalLastUpdated(new Date());
+    } finally {
+      setIsHistoricalLoading(false);
+    }
+  }, [historicalLastUpdated, historicalData]);
+
+  const refetchInsights = useCallback(async () => {
+    try {
+      console.log('Fetching smart insights...');
+      const response = await api.getSmartInsights();
+      
+      if (response.insights) {
+        setInsights(response.insights.key_insights);
+        setRecommendations(response.insights.recommendations);
+        console.log(`Loaded ${response.insights.key_insights.length} insights and ${response.insights.recommendations.length} recommendations`);
+      }
+    } catch (error) {
+      console.error('Error fetching insights:', error);
+      setInsights([]);
+      setRecommendations([]);
+    }
+  }, []);
+
   useEffect(() => {
     refetchTodayData();
     refetchRecommendationsData();
-  }, [refetchTodayData, refetchRecommendationsData]);
+    refetchHistoricalData();
+    refetchInsights();
+  }, [refetchTodayData, refetchRecommendationsData, refetchHistoricalData, refetchInsights]);
 
   const value = {
     todayData,
@@ -112,8 +178,16 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     isRecommendationsLoading,
     recommendationsError,
     recommendationsLastUpdated,
+    historicalData,
+    isHistoricalLoading,
+    historicalError,
+    historicalLastUpdated,
+    insights,
+    recommendations,
     refetchTodayData,
     refetchRecommendationsData,
+    refetchHistoricalData,
+    refetchInsights,
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

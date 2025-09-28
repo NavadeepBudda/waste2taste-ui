@@ -31,6 +31,19 @@ export function Navigation() {
       >
         Recommendations
       </NavLink>
+      <NavLink
+        to="/analytics"
+        className={({ isActive }) =>
+          cn(
+            "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-350 ease-smooth",
+            "text-foreground-muted hover:text-foreground",
+            "hover:bg-[hsla(var(--surface-glass))]",
+            isActive && "text-foreground bg-[hsla(var(--surface-glass))] shadow-sm"
+          )
+        }
+      >
+        Analytics
+      </NavLink>
     </nav>
   );
 }

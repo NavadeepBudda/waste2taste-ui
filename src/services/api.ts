@@ -7,6 +7,9 @@ import {
   HealthCheckResponse,
   AnalyzeFoodDataRequest,
   StoreDisposalDataRequest,
+  HistoricalAnalyticsResponse,
+  TrendsResponse,
+  InsightsResponse,
   ApiError,
 } from '@/types/api';
 
@@ -164,6 +167,21 @@ class Waste2TasteAPI {
   // Analytics endpoint
   async getAnalytics(): Promise<AnalyticsResponse> {
     return this.request<AnalyticsResponse>('/analytics');
+  }
+
+  // Historical analytics endpoints
+  async getHistoricalAnalytics(daysBack: number = 30): Promise<HistoricalAnalyticsResponse> {
+    return this.request<HistoricalAnalyticsResponse>(`/analytics/historical?days_back=${daysBack}`);
+  }
+
+  // Trends endpoint for charting
+  async getTrends(daysBack: number = 30): Promise<TrendsResponse> {
+    return this.request<TrendsResponse>(`/analytics/trends?days_back=${daysBack}`);
+  }
+
+  // Smart insights endpoint
+  async getSmartInsights(): Promise<InsightsResponse> {
+    return this.request<InsightsResponse>('/analytics/insights');
   }
 }
 
