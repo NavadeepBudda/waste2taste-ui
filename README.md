@@ -1,4 +1,4 @@
-# Taste Decision Feed
+# Waste2Taste UI
 
 A modern React application for tracking food waste and getting personalized recipe recommendations.
 
