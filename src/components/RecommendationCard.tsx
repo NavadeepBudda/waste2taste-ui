@@ -58,12 +58,9 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
             </div>
           </div>
 
-          {/* Middle cluster: Name, Station */}
-          <div className="col-span-8">
-            <h3 className="font-semibold text-foreground text-lg leading-tight mb-1 break-words">{dish.name}</h3>
-            <div className="flex items-center gap-2 flex-wrap">
-              <Badge variant="secondary" className="text-xs">{dish.station}</Badge>
-            </div>
+          {/* Middle cluster: Name */}
+          <div className="col-span-8 flex items-center">
+            <h3 className="font-semibold text-foreground text-lg leading-tight break-words">{dish.name}</h3>
           </div>
 
           {/* Right cluster: Actions */}
@@ -128,9 +125,6 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
                     </div>
                   </div>
 
-                  <Button className="w-full" size="sm">
-                    Accept Option A
-                  </Button>
                 </div>
               </div>
 
@@ -165,9 +159,6 @@ export function RecommendationCard({ dish, rank }: RecommendationCardProps) {
                     </div>
                   </div>
 
-                  <Button variant="outline" className="w-full" size="sm">
-                    Accept Option B
-                  </Button>
                 </div>
               </div>
             </div>

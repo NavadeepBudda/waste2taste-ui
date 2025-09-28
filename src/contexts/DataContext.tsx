@@ -100,7 +100,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     refetchTodayData();
-  }, [refetchTodayData]);
+    refetchRecommendationsData();
+  }, [refetchTodayData, refetchRecommendationsData]);
 
   const value = {
     todayData,

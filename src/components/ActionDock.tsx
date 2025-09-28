@@ -74,7 +74,7 @@ export function ActionDock() {
                 <Sparkles className="h-5 w-5 text-accent" />
               </div>
               <p>
-                Prioritise dishes with the highest waste signature first, then trigger a shift briefing when
+                Review dishes with the highest waste signature first, then trigger a shift briefing when
                 coverage passes 80%.
               </p>
             </div>
@@ -87,7 +87,7 @@ export function ActionDock() {
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-foreground-subtle">
                   Team Alerts
                 </p>
-                <p className="text-sm text-foreground-muted">Notify service leads when a swap is scheduled.</p>
+                <p className="text-sm text-foreground-muted">Notify service leads about recommendation updates.</p>
               </div>
             </div>
             <Switch checked={notifyTeam} onCheckedChange={setNotifyTeam} aria-label="Toggle team notifications" />

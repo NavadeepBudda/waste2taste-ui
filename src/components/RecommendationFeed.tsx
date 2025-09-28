@@ -20,7 +20,7 @@ export function RecommendationFeed() {
       rank: index + 1,
       originalDish: item.food_name,
       name: item.food_name, // For compatibility with existing component
-      station: item.keywords?.[1] || item.keywords?.[0] || "General", // Use second keyword as category per docs
+      station: "", // Removed keyword display
       reason: item.dish_summary,
       overlapPercentage: Math.floor(75 + Math.random() * 25), // Simulated
       hasConflict: false,
