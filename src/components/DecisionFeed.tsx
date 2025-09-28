@@ -40,14 +40,17 @@ export function DecisionFeed() {
     );
   }
 
-  // Create a Map to handle duplicates by food name
+  // Create a Map to handle duplicates by food name and combine disposal masses
   const uniqueFoods = new Map();
   
   dashboardData?.most_disliked_foods?.forEach((food) => {
-    if (!uniqueFoods.has(food.food_name)) {
-      uniqueFoods.set(food.food_name, {
+    const foodName = food.food_name;
+    
+    if (!uniqueFoods.has(foodName)) {
+      // First occurrence - create new entry
+      uniqueFoods.set(foodName, {
         rank: food.rank,
-        dishName: food.food_name,
+        dishName: foodName,
         description: food.description, // Pass the description
         station: food.dish_summary || "Kitchen", // Use dish_summary as station
         mass: food.disposal_mass,
@@ -62,6 +65,37 @@ export function DecisionFeed() {
         allergens: [], // Not provided by API
         equipment: [] // Not provided by API
       });
+    } else {
+      // Duplicate found - combine disposal masses and keep the better rank (lower number)
+      const existingFood = uniqueFoods.get(foodName);
+      existingFood.mass += food.disposal_mass;
+      existingFood.rank = Math.min(existingFood.rank, food.rank);
+      
+      // Update other fields if they're missing or if this entry has better data
+      if (!existingFood.description && food.description) {
+        existingFood.description = food.description;
+      }
+      if (!existingFood.station || existingFood.station === "Kitchen") {
+        existingFood.station = food.dish_summary || existingFood.station;
+      }
+      
+      // Merge alternative recipes if new ones are available
+      if (food.alternative_recipes && food.alternative_recipes.length > 0) {
+        const newRecipes = food.alternative_recipes.map((recipe) => ({
+          name: recipe.recipe_name,
+          description: recipe.improvements,
+          sharedIngredients: recipe.similar_ingredients?.length || 0,
+          prep_time: recipe.prep_time
+        }));
+        
+        // Only add recipes that aren't already present (by name)
+        const existingRecipeNames = new Set(existingFood.swapOptions.map(r => r.name));
+        const uniqueNewRecipes = newRecipes.filter(recipe => !existingRecipeNames.has(recipe.name));
+        existingFood.swapOptions = [...existingFood.swapOptions, ...uniqueNewRecipes];
+      }
+      
+      // Update outlier status based on new combined rank
+      existingFood.isOutlier = existingFood.rank <= 3;
     }
   });
 

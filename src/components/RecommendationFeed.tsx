@@ -4,8 +4,47 @@ import { useData } from "@/contexts/DataContext";
 export function RecommendationFeed() {
   const { recommendationsData } = useData();
 
-  // Map data according to API docs - UI Mapping for Better Options Page
-  const recommendations = recommendationsData?.most_disliked_foods?.map((item, index) => {
+  // First combine duplicate foods by name and sum their disposal masses
+  const uniqueFoods = new Map();
+  
+  recommendationsData?.most_disliked_foods?.forEach((food) => {
+    const foodName = food.food_name;
+    
+    if (!uniqueFoods.has(foodName)) {
+      // First occurrence - create new entry
+      uniqueFoods.set(foodName, {
+        ...food,
+        disposal_mass: food.disposal_mass
+      });
+    } else {
+      // Duplicate found - combine disposal masses and keep the better rank (lower number)
+      const existingFood = uniqueFoods.get(foodName);
+      existingFood.disposal_mass += food.disposal_mass;
+      existingFood.rank = Math.min(existingFood.rank, food.rank);
+      
+      // Update other fields if they're missing or if this entry has better data
+      if (!existingFood.dish_summary && food.dish_summary) {
+        existingFood.dish_summary = food.dish_summary;
+      }
+      
+      // Merge alternative recipes if new ones are available
+      if (food.alternative_recipes && food.alternative_recipes.length > 0) {
+        if (!existingFood.alternative_recipes) {
+          existingFood.alternative_recipes = [];
+        }
+        
+        // Only add recipes that aren't already present (by name)
+        const existingRecipeNames = new Set(existingFood.alternative_recipes.map(r => r.recipe_name));
+        const uniqueNewRecipes = food.alternative_recipes.filter(recipe => !existingRecipeNames.has(recipe.recipe_name));
+        existingFood.alternative_recipes = [...existingFood.alternative_recipes, ...uniqueNewRecipes];
+      }
+    }
+  });
+
+  const combinedFoods = Array.from(uniqueFoods.values()).sort((a, b) => a.rank - b.rank);
+
+  // Map data according to API docs - UI Mapping for Better Options Page  
+  const recommendations = combinedFoods?.map((item, index) => {
     // Calculate prep time based on recipe complexity as per docs
     const calculatePrepTime = (recipe) => {
       if (!recipe?.similar_ingredients) return "same";

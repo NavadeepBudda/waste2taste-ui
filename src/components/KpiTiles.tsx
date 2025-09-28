@@ -43,24 +43,48 @@ export function KpiTiles() {
     : 0;
   const recommendationsGenerated = todayData?.analysis_summary?.recommendations_generated ?? 0;
 
-  const totalDisposalMass = useMemo(() => {
+  const combinedFoods = useMemo(() => {
     if (!todayData?.most_disliked_foods?.length) {
-      return 0;
+      return [];
     }
 
-    return todayData.most_disliked_foods.reduce((sum, food) => sum + food.disposal_mass, 0);
+    // Combine duplicate foods by name and sum their disposal masses
+    const uniqueFoods = new Map();
+    
+    todayData.most_disliked_foods.forEach((food) => {
+      const foodName = food.food_name;
+      
+      if (!uniqueFoods.has(foodName)) {
+        // First occurrence - create new entry
+        uniqueFoods.set(foodName, {
+          ...food,
+          disposal_mass: food.disposal_mass
+        });
+      } else {
+        // Duplicate found - combine disposal masses and keep the better rank (lower number)
+        const existingFood = uniqueFoods.get(foodName);
+        existingFood.disposal_mass += food.disposal_mass;
+        existingFood.rank = Math.min(existingFood.rank, food.rank);
+      }
+    });
+
+    return Array.from(uniqueFoods.values()).sort((a, b) => a.rank - b.rank);
   }, [todayData?.most_disliked_foods]);
 
+  const totalDisposalMass = useMemo(() => {
+    return combinedFoods.reduce((sum, food) => sum + food.disposal_mass, 0);
+  }, [combinedFoods]);
+
   const massTrend = useMemo(() => {
-    if (!todayData?.most_disliked_foods?.length) {
+    if (!combinedFoods.length) {
       return buildFallbackTrend();
     }
 
-    return todayData.most_disliked_foods
+    return combinedFoods
       .slice(0, 12)
       .map((food, index) => ({ index, mass: Number(food.disposal_mass.toFixed(2)) }))
       .sort((a, b) => a.index - b.index);
-  }, [todayData?.most_disliked_foods]);
+  }, [combinedFoods]);
 
   const coverage = useMemo(() => {
     if (!dishesTracked) {
