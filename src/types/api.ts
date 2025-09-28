@@ -19,7 +19,7 @@ export interface MostDislikedFood {
   disposal_mass: number;
   rank: number;
   dish_summary: string;
-  keywords: string;
+  keywords: string | string[];
   alternative_recipes: AlternativeRecipe[];
 }
 

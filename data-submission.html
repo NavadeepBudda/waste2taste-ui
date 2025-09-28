@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Waste Data Submission</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+        }
+        
+        h1 {
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .food-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #f9fafb;
+        }
+        
+        .food-item .name-field {
+            flex: 1;
+        }
+        
+        .food-item .mass-field {
+            width: 120px;
+        }
+        
+        .remove-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            height: fit-content;
+            margin-top: 20px;
+        }
+        
+        .remove-btn:hover {
+            background: #dc2626;
+        }
+        
+        .add-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .add-btn:hover {
+            background: #4b5563;
+        }
+        
+        .submit-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            background: #2563eb;
+        }
+        
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .config-section {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .config-section h3 {
+            color: #92400e;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Food Waste Data Submission</h1>
+        <p class="subtitle">Submit food waste data directly to Supabase database</p>
+        
+        <!-- Configuration Section -->
+        <div class="config-section">
+            <h3>⚙️ Supabase Configuration</h3>
+            <div class="form-group">
+                <label for="supabaseUrl">Supabase URL:</label>
+                <input type="text" id="supabaseUrl" placeholder="https://your-project.supabase.co">
+            </div>
+            <div class="form-group">
+                <label for="supabaseKey">Supabase Anon Key:</label>
+                <input type="text" id="supabaseKey" placeholder="your-anon-key">
+            </div>
+        </div>
+        
+        <!-- Status Messages -->
+        <div id="statusMessage" class="status hidden"></div>
+        
+        <!-- Data Submission Form -->
+        <form id="dataForm">
+            <div class="form-group">
+                <label for="location">Location (optional):</label>
+                <input type="text" id="location" placeholder="e.g., Dining Hall A, Cafeteria B">
+            </div>
+            
+            <label>Food Items:</label>
+            <div id="foodItems">
+                <!-- Food items will be added here -->
+            </div>
+            
+            <button type="button" class="add-btn" onclick="addFoodItem()">+ Add Food Item</button>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">Submit Data</button>
+        </form>
+    </div>
+
+    <script>
+        let foodItemCount = 0;
+        let supabaseClient = null;
+
+        // Initialize with first food item
+        addFoodItem();
+
+        function initializeSupabase() {
+            const url = document.getElementById('supabaseUrl').value.trim();
+            const key = document.getElementById('supabaseKey').value.trim();
+            
+            if (!url || !key) {
+                showStatus('Please enter both Supabase URL and Anon Key', 'error');
+                return false;
+            }
+            
+            try {
+                supabaseClient = supabase.createClient(url, key);
+                return true;
+            } catch (error) {
+                showStatus('Invalid Supabase configuration: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        function addFoodItem() {
+            const container = document.getElementById('foodItems');
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'food-item';
+            itemDiv.innerHTML = `
+                <div class="name-field">
+                    <label>Food Name:</label>
+                    <input type="text" name="foodName" placeholder="e.g., Pizza, Salad, Soup" required>
+                </div>
+                <div class="mass-field">
+                    <label>Mass (grams):</label>
+                    <input type="number" name="disposalMass" step="0.1" min="0" placeholder="0.0" required>
+                </div>
+                ${foodItemCount > 0 ? '<button type="button" class="remove-btn" onclick="removeFoodItem(this)">Remove</button>' : ''}
+            `;
+            container.appendChild(itemDiv);
+            foodItemCount++;
+        }
+
+        function removeFoodItem(button) {
+            button.parentElement.remove();
+            foodItemCount--;
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.classList.remove('hidden');
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusEl.classList.add('hidden');
+                }, 5000);
+            }
+        }
+
+        document.getElementById('dataForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!initializeSupabase()) {
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            try {
+                // Collect form data
+                const location = document.getElementById('location').value.trim();
+                const foodItems = Array.from(document.querySelectorAll('.food-item')).map(item => {
+                    const foodName = item.querySelector('input[name="foodName"]').value.trim();
+                    const disposalMass = parseFloat(item.querySelector('input[name="disposalMass"]').value);
+                    return { foodName, disposalMass };
+                }).filter(item => item.foodName && item.disposalMass > 0);
+                
+                if (foodItems.length === 0) {
+                    showStatus('Please add at least one valid food item', 'error');
+                    return;
+                }
+                
+                // Prepare records for Supabase
+                const records = foodItems.map(item => ({
+                    food_name: item.foodName,
+                    disposal_mass: item.disposalMass,
+                    location: location || null,
+                    session_id: `session_${Date.now()}`
+                }));
+                
+                // Insert into Supabase
+                const { data, error } = await supabaseClient
+                    .from('food_waste')
+                    .insert(records);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                showStatus(`Successfully submitted ${records.length} food waste record(s)!`, 'success');
+                
+                // Reset form
+                document.getElementById('dataForm').reset();
+                document.getElementById('foodItems').innerHTML = '';
+                foodItemCount = 0;
+                addFoodItem();
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                showStatus('Submission failed: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Data';
+            }
+        });
+        
+        // Save config to localStorage
+        document.getElementById('supabaseUrl').addEventListener('input', function() {
+            localStorage.setItem('supabaseUrl', this.value);
+        });
+        
+        document.getElementById('supabaseKey').addEventListener('input', function() {
+            localStorage.setItem('supabaseKey', this.value);
+        });
+        
+        // Load config from localStorage
+        window.addEventListener('load', function() {
+            const savedUrl = localStorage.getItem('supabaseUrl');
+            const savedKey = localStorage.getItem('supabaseKey');
+            
+            if (savedUrl) document.getElementById('supabaseUrl').value = savedUrl;
+            if (savedKey) document.getElementById('supabaseKey').value = savedKey;
+        });
+    </script>
+</body>
+</html>

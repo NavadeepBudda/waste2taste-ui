@@ -49,20 +49,20 @@ export function RecommendationFeed() {
         popularity: item.alternative_recipes?.[1]?.estimated_popularity || 0
       },
       
-      dietary: item.keywords || []
+      dietary: Array.isArray(item.keywords)
+        ? item.keywords
+        : (item.keywords ? item.keywords.split(',').map((word: string) => word.trim()).filter(Boolean) : []),
     };
   }) || [];
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-4xl font-bold text-foreground tracking-tight mb-3">Better Options</h2>
-          <p className="text-lg text-foreground-muted">
-            Recommended swaps to reduce waste and improve satisfaction
-          </p>
-        </div>
+      <div className="mb-8">
+        <h2 className="text-4xl font-bold text-foreground tracking-tight mb-3">Better Options</h2>
+        <p className="text-lg text-foreground-muted">
+          Recommended swaps to reduce waste and improve satisfaction
+        </p>
       </div>
 
       {/* Recommendation Cards */}
